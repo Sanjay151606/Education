@@ -54,7 +54,7 @@ export default function JSquadBadge() {
         {/* Text Below Coin */}
         <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
           <div className="text-xs font-bold bg-gradient-to-r from-gray-600 via-slate-600 to-gray-700 bg-clip-text text-transparent">
-            J-SQUAD
+            powerhouse
           </div>
         </div>
       </div>
@@ -76,7 +76,7 @@ export default function JSquadBadge() {
               {/* Text */}
               <div>
                 <div className="font-bold text-sm bg-gradient-to-r from-blue-300 to-cyan-300 bg-clip-text text-transparent">
-                  J-SQUAD
+                  powerhouse
                 </div>
                 <div className="text-xs text-gray-400">Tech Solutions</div>
               </div>

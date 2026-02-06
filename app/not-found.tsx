@@ -33,7 +33,7 @@ export default function NotFound() {
             <div className="flex items-center justify-center gap-2 text-sm">
               <span className="text-gray-500">Powered by</span>
               <span className="font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                J-Squad
+                powerhouse
               </span>
             </div>
           </div>
