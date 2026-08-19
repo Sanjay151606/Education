@@ -1,7 +1,7 @@
 import { get_topic_mastery, search_learning_content } from './tools'
 import { db } from '../db/database'
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent'
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent'
 
 export interface TutorMessage {
   role: 'user' | 'assistant'
@@ -110,33 +110,77 @@ Current conversation:`
   conversationText += `\nStudent: ${userMessage}\nTutor:`
 
   try {
-    const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: conversationText }] }],
-        generationConfig: {
-          temperature: 0.7,
-          topK: 40,
-          topP: 0.95,
-          maxOutputTokens: 1500,
-        },
-        safetySettings: [
-          { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
-          { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
-          { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
-          { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
-        ]
-      })
-    })
+    let aiResponse = ''
 
-    if (!response.ok) {
-      throw new Error(`Gemini API error: ${response.status}`)
+    // 1. If OpenAI API Key is present, try OpenAI GPT-4o-mini
+    const openAIKey = process.env.OPENAI_API_KEY
+    if (openAIKey) {
+      try {
+        const messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [
+          { role: 'system', content: systemPrompt }
+        ]
+        history.slice(-8).forEach(msg => {
+          messages.push({
+            role: msg.role === 'user' ? 'user' : 'assistant',
+            content: msg.content
+          })
+        })
+        messages.push({ role: 'user', content: userMessage })
+
+        const openAIRes = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${openAIKey}`
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages,
+            temperature: 0.7,
+            max_tokens: 1500
+          })
+        })
+
+        if (openAIRes.ok) {
+          const openAIData = await openAIRes.json()
+          aiResponse = openAIData.choices?.[0]?.message?.content || ''
+        }
+      } catch (oaiErr) {
+        console.warn('[TutorAgent] OpenAI error, falling back to Gemini:', oaiErr)
+      }
     }
 
-    const data = await response.json()
-    const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text
-      ?? "I'm having trouble generating a response. Please try again."
+    // 2. Fallback to Gemini
+    if (!aiResponse && apiKey) {
+      const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: conversationText }] }],
+          generationConfig: {
+            temperature: 0.7,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 1500,
+          },
+          safetySettings: [
+            { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
+            { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
+            { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
+            { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
+          ]
+        })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || ''
+      }
+    }
+
+    if (!aiResponse) {
+      aiResponse = "I'm having trouble generating a response. Please try again."
+    }
 
     // Log the interaction
     db.recordLearningEvent({
