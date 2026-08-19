@@ -4,22 +4,11 @@ import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 
-interface Topic {
-  id: string
-  title: string
-  category: string
-  difficulty: string
-  courseId?: string
-  masteryScore?: number
-}
-
 function QuizContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const currentTopicParam = searchParams.get('topic') || 'topic_recursion'
+  const topicId = searchParams.get('topic') || 'topic_recursion'
 
-  const [availableTopics, setAvailableTopics] = useState<Topic[]>([])
-  const [selectedTopicId, setSelectedTopicId] = useState<string>(currentTopicParam)
   const [questions, setQuestions] = useState<any[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({})
@@ -27,41 +16,13 @@ function QuizContent() {
   const [submitting, setSubmitting] = useState(false)
   const [evaluation, setEvaluation] = useState<any>(null)
 
-  // Fetch available topics for topic selector
-  useEffect(() => {
-    async function loadTopics() {
-      try {
-        const res = await fetch('/api/learning-graph')
-        const data = await res.json()
-        if (data.nodes && data.nodes.length > 0) {
-          setAvailableTopics(data.nodes)
-        }
-      } catch (e) {
-        console.warn('Could not load topics list:', e)
-      }
-    }
-    loadTopics()
-  }, [])
-
-  // Sync topic when url searchParam changes
-  useEffect(() => {
-    if (currentTopicParam && currentTopicParam !== selectedTopicId) {
-      setSelectedTopicId(currentTopicParam)
-    }
-  }, [currentTopicParam])
-
-  // Fetch calibrated quiz questions for selected topic
   useEffect(() => {
     async function fetchQuiz() {
-      setLoading(true)
-      setEvaluation(null)
-      setCurrentIndex(0)
-      setSelectedAnswers({})
       try {
         const res = await fetch('/api/quiz', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'generate', topicId: selectedTopicId, count: 4, difficulty: 'MEDIUM' })
+          body: JSON.stringify({ action: 'generate', topicId, count: 4, difficulty: 'MEDIUM' })
         })
         const data = await res.json()
         if (data.questions && data.questions.length > 0) {
@@ -74,12 +35,7 @@ function QuizContent() {
       }
     }
     fetchQuiz()
-  }, [selectedTopicId])
-
-  const handleTopicChange = (newTopicId: string) => {
-    setSelectedTopicId(newTopicId)
-    router.replace(`/education/quiz?topic=${newTopicId}`)
-  }
+  }, [topicId])
 
   const handleSubmit = async () => {
     setSubmitting(true)
@@ -95,11 +51,11 @@ function QuizContent() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'submit',
-          topicId: selectedTopicId,
+          topicId,
           difficulty: 'MEDIUM',
           timeSpentSeconds: 90,
           submission: {
-            topicId: selectedTopicId,
+            topicId,
             answers: answersPayload,
             difficulty: 'MEDIUM'
           }
@@ -120,7 +76,7 @@ function QuizContent() {
       <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">
         <div className="flex items-center gap-3">
           <span className="w-3 h-3 bg-blue-500 rounded-full animate-ping" />
-          <span className="text-sm font-mono">Generating calibrated questions & neural links...</span>
+          <span className="text-sm font-mono">Generating calibrated questions...</span>
         </div>
       </div>
     )
@@ -162,7 +118,7 @@ function QuizContent() {
           {triggered.length > 0 && (
             <div className="text-left bg-purple-950/20 border border-purple-800/40 rounded-xl p-4 mt-6">
               <div className="text-xs font-mono text-purple-400 uppercase font-bold mb-2 flex items-center gap-2">
-                <span>⚡ Triggered Autonomous Automations & Sync</span>
+                <span>⚡ Triggered Autonomous Automations</span>
               </div>
               <div className="space-y-1 text-xs text-slate-300">
                 {triggered.map((t: any, i: number) => (
@@ -171,37 +127,23 @@ function QuizContent() {
                     <span className="font-mono text-emerald-400 text-[10px] uppercase font-bold">{t.status}</span>
                   </div>
                 ))}
-                <div className="flex items-center justify-between pt-1 border-t border-purple-900/30 text-slate-400 text-[11px]">
-                  <span>Google Sheets Mirror Backup:</span>
-                  <span className="text-emerald-400 font-mono font-bold">QUEUED & SYNCED</span>
-                </div>
               </div>
             </div>
           )}
 
-          <div className="flex flex-wrap justify-center gap-4 pt-6">
+          <div className="flex justify-center gap-4 pt-6">
             <Link
               href="/education/dashboard"
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm rounded-xl transition-all shadow-md"
+              className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm rounded-xl transition-all"
             >
               Back to Dashboard
             </Link>
             <Link
-              href={`/education/ai-tutor?topic=${selectedTopicId}`}
+              href={`/education/ai-tutor?topic=${topicId}`}
               className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-sm rounded-xl transition-all"
             >
               Discuss with AI Tutor
             </Link>
-            <button
-              onClick={() => {
-                setEvaluation(null)
-                setCurrentIndex(0)
-                setSelectedAnswers({})
-              }}
-              className="px-6 py-3 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 font-bold text-sm rounded-xl transition-all"
-            >
-              Retake Topic Quiz 🔄
-            </button>
           </div>
         </div>
       </div>
@@ -209,46 +151,12 @@ function QuizContent() {
   }
 
   const currentQ = questions[currentIndex]
-  const currentTopicObj = availableTopics.find(t => t.id === selectedTopicId)
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 py-12 px-4 max-w-3xl mx-auto space-y-6">
-      
-      {/* Topic Selector / Course Switcher Banner */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div>
-            <span className="text-xs font-mono text-blue-400 uppercase font-semibold">Brain Graph Quiz Track</span>
-            <h1 className="text-lg sm:text-xl font-bold text-white">
-              {currentTopicObj?.title || selectedTopicId.replace('topic_', '').toUpperCase()}
-            </h1>
-          </div>
-
-          {availableTopics.length > 0 && (
-            <div className="flex items-center gap-2">
-              <label htmlFor="topic-selector" className="text-xs text-slate-400 whitespace-nowrap">
-                Switch Topic:
-              </label>
-              <select
-                id="topic-selector"
-                value={selectedTopicId}
-                onChange={(e) => handleTopicChange(e.target.value)}
-                className="bg-slate-950 border border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-blue-500 font-sans"
-              >
-                {availableTopics.map(t => (
-                  <option key={t.id} value={t.id}>
-                    {t.title} ({t.difficulty})
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-        </div>
-      </div>
-
       {/* Quiz Progress Topbar */}
       <div className="flex items-center justify-between text-xs font-mono text-slate-400 border-b border-slate-800 pb-4">
-        <div>TOPIC: {selectedTopicId.toUpperCase().replace('TOPIC_', '')}</div>
+        <div>TOPIC: {topicId.toUpperCase().replace('TOPIC_', '')}</div>
         <div>QUESTION {currentIndex + 1} OF {questions.length}</div>
       </div>
 
@@ -323,7 +231,7 @@ function QuizContent() {
                 onClick={handleSubmit}
                 className="px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-emerald-500/20"
               >
-                {submitting ? 'Submitting...' : 'Submit Quiz'}
+                {submitting ? 'Submitting...' : 'Submit Assessment'}
               </button>
             )}
           </div>
@@ -335,7 +243,7 @@ function QuizContent() {
 
 export default function QuizPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">Loading Quiz...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">Loading Assessment...</div>}>
       <QuizContent />
     </Suspense>
   )
