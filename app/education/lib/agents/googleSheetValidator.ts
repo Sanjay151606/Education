@@ -83,7 +83,8 @@ export function autoMapColumns(headers: string[]): Record<string, keyof GoogleSh
     assignmentStatus: ['assignment status', 'assignment', 'homework status'],
     goal: ['learning goal', 'goal', 'target'],
     dailyStudyGoal: ['daily study goal', 'daily goal', 'study goal'],
-    aiRecommendation: ['ai recommendation', 'recommendation', 'suggestion', 'next action']
+    aiRecommendation: ['ai recommendation', 'recommendation', 'suggestion', 'next action'],
+    lastUpdated: ['last updated', 'updated at', 'timestamp', 'modified date']
   }
 
   headers.forEach((header) => {

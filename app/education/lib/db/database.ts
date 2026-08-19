@@ -22,7 +22,8 @@ import {
   WorkflowRun,
   WorkflowLog,
   GoogleIntegration,
-  GoogleSheetSync
+  GoogleSheetSync,
+  GoogleSheetBackupLog
 } from './schema'
 import {
   INITIAL_STUDENT,
@@ -58,6 +59,7 @@ interface DBData {
   workflowRuns: WorkflowRun[]
   googleIntegrations: GoogleIntegration[]
   googleSheetSyncs: GoogleSheetSync[]
+  googleSheetBackupLogs: GoogleSheetBackupLog[]
 }
 
 class DatabaseManager {
@@ -102,7 +104,8 @@ class DatabaseManager {
       workflows: [...INITIAL_WORKFLOWS],
       workflowRuns: [],
       googleIntegrations: [],
-      googleSheetSyncs: []
+      googleSheetSyncs: [],
+      googleSheetBackupLogs: []
     }
   }
 
@@ -148,6 +151,10 @@ class DatabaseManager {
   // Courses & Topics
   public getCourses(): Course[] {
     return this.data.courses
+  }
+
+  public getCourseById(courseId: string): Course | undefined {
+    return this.data.courses.find(c => c.id === courseId || c.slug === courseId)
   }
 
   public getTopics(courseId?: string): Topic[] {
@@ -625,6 +632,44 @@ class DatabaseManager {
       list = list.filter(s => s.integrationId === integrationId)
     }
     return list.slice(0, limit)
+  }
+
+  // ─── Automatic Backup Log Methods ───────────────────────────────────────────
+  public recordGoogleSheetBackupLog(log: Omit<GoogleSheetBackupLog, 'id' | 'createdAt'>): GoogleSheetBackupLog {
+    if (!this.data.googleSheetBackupLogs) this.data.googleSheetBackupLogs = []
+    const newLog: GoogleSheetBackupLog = {
+      ...log,
+      id: `bklog_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+      createdAt: new Date().toISOString()
+    }
+    this.data.googleSheetBackupLogs.unshift(newLog)
+    // Keep max 200 logs
+    if (this.data.googleSheetBackupLogs.length > 200) {
+      this.data.googleSheetBackupLogs = this.data.googleSheetBackupLogs.slice(0, 200)
+    }
+    this.save()
+    return newLog
+  }
+
+  public updateGoogleSheetBackupLog(id: string, updates: Partial<GoogleSheetBackupLog>): GoogleSheetBackupLog | undefined {
+    if (!this.data.googleSheetBackupLogs) return undefined
+    const idx = this.data.googleSheetBackupLogs.findIndex(l => l.id === id)
+    if (idx !== -1) {
+      this.data.googleSheetBackupLogs[idx] = { ...this.data.googleSheetBackupLogs[idx], ...updates }
+      this.save()
+      return this.data.googleSheetBackupLogs[idx]
+    }
+    return undefined
+  }
+
+  public getGoogleSheetBackupLogs(limit: number = 50): GoogleSheetBackupLog[] {
+    if (!this.data.googleSheetBackupLogs) return []
+    return this.data.googleSheetBackupLogs.slice(0, limit)
+  }
+
+  public getPendingOrFailedBackupLogs(): GoogleSheetBackupLog[] {
+    if (!this.data.googleSheetBackupLogs) return []
+    return this.data.googleSheetBackupLogs.filter(l => l.status === 'PENDING' || l.status === 'FAILED')
   }
 
   // Reset database to seed

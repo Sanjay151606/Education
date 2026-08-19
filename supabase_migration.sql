@@ -320,9 +320,27 @@ CREATE TABLE IF NOT EXISTS public.google_sheet_syncs (
     completed_at TIMESTAMPTZ
 );
 
+CREATE TABLE IF NOT EXISTS public.google_sheet_backup_logs (
+    id TEXT PRIMARY KEY,
+    student_id TEXT NOT NULL,
+    operation_type TEXT NOT NULL,
+    record_identifier TEXT NOT NULL,
+    status TEXT NOT NULL,
+    error_message TEXT,
+    attempt_count INTEGER DEFAULT 1,
+    payload JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    synced_at TIMESTAMPTZ
+);
+
 -- ============================================================================
 -- ROW LEVEL SECURITY (RLS) POLICIES
 -- ============================================================================
+
+ALTER TABLE public.google_sheet_backup_logs ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Admins/Auth Can Manage Backup Logs" ON public.google_sheet_backup_logs FOR ALL USING (true);
+CREATE INDEX IF NOT EXISTS idx_backup_logs_student ON public.google_sheet_backup_logs (student_id);
+CREATE INDEX IF NOT EXISTS idx_backup_logs_status ON public.google_sheet_backup_logs (status);
 
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.students ENABLE ROW LEVEL SECURITY;

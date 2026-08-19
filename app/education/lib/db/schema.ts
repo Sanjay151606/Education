@@ -354,24 +354,41 @@ export interface GoogleSheetSync {
   durationMs?: number
 }
 
-export interface GoogleSheetImportRow {
+export interface GoogleSheetBackupLog {
+  id: string
+  studentId: string
+  operationType: 'INSERT' | 'UPDATE'
+  recordIdentifier: string // studentId + '::' + course + '::' + topic
+  status: 'PENDING' | 'SYNCING' | 'SYNCED' | 'FAILED'
+  errorMessage?: string
+  attemptCount: number
+  payload: Record<string, any>
+  createdAt: string
+  syncedAt?: string
+}
+
+export interface GoogleSheetBackupRow {
   studentId: string
   studentName: string
   email: string
   course: string
   topic: string
-  difficulty: 'EASY' | 'MEDIUM' | 'HARD' | 'Beginner' | 'Intermediate' | 'Advanced'
+  difficulty: string
   quizScore: number
   masteryScore: number
   questionsAttempted: number
   correctAnswers: number
   studyTime: number
-  lastStudied?: string
-  completionPercentage?: number
-  revisionDue?: string
-  learningStatus?: 'Weak' | 'Medium' | 'Strong' | 'Not Started'
-  assignmentStatus?: 'Pending' | 'Submitted' | 'Graded'
-  goal?: string
-  dailyStudyGoal?: number
-  aiRecommendation?: string
+  lastStudied: string
+  completionPercentage: number
+  revisionDue: string
+  learningStatus: string
+  assignmentStatus: string
+  goal: string
+  dailyStudyGoal: number
+  aiRecommendation: string
+  lastUpdated: string
 }
+
+export type GoogleSheetImportRow = GoogleSheetBackupRow
+

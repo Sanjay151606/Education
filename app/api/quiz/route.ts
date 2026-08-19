@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { generateQuizQuestions, evaluateQuizSubmission } from '@/app/education/lib/agents/assessmentAgent'
 import { triggerWorkflowsByEvent } from '@/app/education/lib/agents/workflowEngine'
 import { db } from '@/app/education/lib/db/database'
+import { queueGoogleSheetBackup } from '@/app/education/lib/services/googleSheetBackupService'
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,6 +31,9 @@ export async function POST(request: NextRequest) {
         incorrectCount: evaluation.incorrectCount,
         difficulty: sub.difficulty || 'MEDIUM'
       })
+
+      // Asynchronously trigger Google Sheets secondary backup mirror
+      queueGoogleSheetBackup('student_1', sub.topicId || 'topic_recursion')
 
       return NextResponse.json({
         evaluation,

@@ -62,6 +62,12 @@ export default function SaaSながらLandingPage() {
             <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full">Gemini 2.5</span>
           </Link>
           <Link
+            href="/education/playground"
+            className="w-full sm:w-auto px-6 py-4 rounded-xl border border-blue-500/40 bg-blue-950/30 hover:bg-blue-900/40 text-blue-300 font-semibold text-base transition-all flex items-center justify-center gap-2"
+          >
+            <span>💻 Code Arena</span>
+          </Link>
+          <Link
             href="/education/admin/workflows"
             className="w-full sm:w-auto px-6 py-4 rounded-xl border border-purple-500/30 bg-purple-950/20 hover:bg-purple-900/30 text-purple-300 font-semibold text-base transition-all flex items-center justify-center gap-2"
           >

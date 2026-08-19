@@ -17,6 +17,7 @@ export default function Navigation() {
     { href: '/education/learning-graph', label: 'Brain Graph', icon: '🧠' },
     { href: '/education/courses', label: 'Courses', icon: '📚' },
     { href: '/education/study-plan', label: 'Study Plan', icon: '📅' },
+    { href: '/education/playground', label: 'Playground', icon: '💻' },
     { href: '/education/quiz', label: 'Quiz', icon: '⚡' },
     { href: '/education/revision', label: 'Revision', icon: '🔄' },
     { href: '/education/progress', label: 'Analytics', icon: '📈' },

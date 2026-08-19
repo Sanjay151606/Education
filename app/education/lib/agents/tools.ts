@@ -1,6 +1,7 @@
 import { db } from '../db/database'
 import { TopicMastery, Recommendation, LearningSession } from '../db/schema'
 import { calculateMastery, getMasteryStatus, getNextRevisionDate } from './masteryCalculator'
+import { queueGoogleSheetBackup } from '../services/googleSheetBackupService'
 
 const STUDENT_ID = 'student_1'
 
@@ -90,7 +91,7 @@ export function update_topic_mastery(topicId: string, latestScore: number, diffi
   const status = getMasteryStatus(newMasteryScore)
   const nextRevisionAt = getNextRevisionDate(newMasteryScore)
 
-  return db.upsertTopicMastery({
+  const updated = db.upsertTopicMastery({
     topicId,
     studentId: STUDENT_ID,
     masteryScore: newMasteryScore,
@@ -103,6 +104,11 @@ export function update_topic_mastery(topicId: string, latestScore: number, diffi
     difficultyLevel: difficulty,
     status
   })
+
+  // Trigger automated asynchronous backup mirror
+  queueGoogleSheetBackup(STUDENT_ID, topicId)
+
+  return updated
 }
 
 // ─── Recommendation Tools ─────────────────────────────────────────────────────

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/app/education/lib/db/database'
+import { queueGoogleSheetBackup } from '@/app/education/lib/services/googleSheetBackupService'
 
 export async function GET() {
   try {
@@ -20,3 +21,15 @@ export async function GET() {
     return NextResponse.json({ error: error.message || 'Error fetching profile' }, { status: 500 })
   }
 }
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const updated = db.updateStudent('student_1', body)
+    queueGoogleSheetBackup('student_1')
+    return NextResponse.json({ success: true, student: updated })
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message || 'Error updating profile' }, { status: 500 })
+  }
+}
+
