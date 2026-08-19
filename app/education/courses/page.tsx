@@ -235,7 +235,7 @@ export default function CoursesPage() {
             Take our assessment and get personalized learning recommendations
           </p>
           <Link
-            href="/education/quiz"
+            href="/education/dashboard"
             className="inline-block px-8 py-4 bg-white text-green-600 rounded-lg font-bold hover:bg-green-50 transition-all"
           >
             Take Assessment →

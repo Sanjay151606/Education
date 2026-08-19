@@ -174,7 +174,7 @@ export default function ContactPage() {
                   <a href="/education/courses" className="block text-blue-600 hover:text-blue-800 font-semibold">
                     → Browse Courses
                   </a>
-                  <a href="/education/quiz" className="block text-blue-600 hover:text-blue-800 font-semibold">
+                  <a href="/education/dashboard" className="block text-blue-600 hover:text-blue-800 font-semibold">
                     → Take Assessment
                   </a>
                   <a href="/education/dashboard" className="block text-blue-600 hover:text-blue-800 font-semibold">
