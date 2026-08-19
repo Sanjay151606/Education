@@ -5,12 +5,11 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/app/education/lib/context/AuthContext'
 import Link from 'next/link'
 
-export default function RegisterPage() {
+export default function EducationRegisterPage() {
   const router = useRouter()
   const { login } = useAuth()
-  const [name, setName] = useState('Alex Rivera')
-  const [email, setEmail] = useState('alex@braingraph.ai')
-  const [role, setRole] = useState<'student' | 'teacher' | 'admin'>('student')
+  const [name, setName] = useState('Sanjay Kumar')
+  const [email, setEmail] = useState('sanjay@braingraph.ai')
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -59,25 +58,12 @@ export default function RegisterPage() {
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-              Role
-            </label>
-            <div className="grid grid-cols-3 gap-2">
-              {(['student', 'teacher', 'admin'] as const).map(r => (
-                <button
-                  type="button"
-                  key={r}
-                  onClick={() => setRole(r)}
-                  className={`py-2 px-3 rounded-lg text-xs font-bold uppercase transition-all ${
-                    role === r
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'bg-slate-950 border border-slate-800 text-slate-400 hover:text-white'
-                  }`}
-                >
-                  {r}
-                </button>
-              ))}
+          <div className="pt-1">
+            <div className="flex items-center justify-between px-3.5 py-2.5 bg-blue-950/30 border border-blue-800/40 rounded-xl text-xs">
+              <span className="text-slate-300 font-medium">Assigned Role:</span>
+              <span className="bg-blue-600/30 text-blue-300 font-bold px-2.5 py-0.5 rounded-lg border border-blue-500/30 uppercase tracking-wider text-[10px]">
+                Student
+              </span>
             </div>
           </div>
 
@@ -92,7 +78,7 @@ export default function RegisterPage() {
 
         <div className="mt-6 text-center text-xs text-slate-400">
           Already have an account?{' '}
-          <Link href="/education/login" className="text-blue-400 hover:underline font-semibold">
+          <Link href="/login" className="text-blue-400 hover:underline font-semibold">
             Sign In
           </Link>
         </div>
@@ -100,3 +86,4 @@ export default function RegisterPage() {
     </div>
   )
 }
+

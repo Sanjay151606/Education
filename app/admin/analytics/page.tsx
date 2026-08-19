@@ -4,12 +4,15 @@ import { useState } from 'react'
 
 export default function AdminAnalyticsPage() {
   const [timeRange, setTimeRange] = useState('30d')
+  const [selectedStudent, setSelectedStudent] = useState('all')
+  const [selectedCourse, setSelectedCourse] = useState('all')
+  const [selectedTopic, setSelectedTopic] = useState('all')
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-6">
         
-        {/* Header */}
+        {/* Header & Filter Controls */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
           <div>
             <h1 className="text-2xl font-bold text-white flex items-center gap-2">
@@ -18,6 +21,8 @@ export default function AdminAnalyticsPage() {
             </h1>
             <p className="text-xs text-slate-400 mt-0.5">Aggregate performance metrics, retention trajectories, and knowledge gap hot-spots</p>
           </div>
+          
+          {/* Date Filter */}
           <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 p-1 rounded-xl">
             {['7d', '30d', '90d', 'All'].map(r => (
               <button
@@ -30,6 +35,52 @@ export default function AdminAnalyticsPage() {
                 {r}
               </button>
             ))}
+          </div>
+        </div>
+
+        {/* Multi-Dimensional Filter Bar (Student, Course, Topic) */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-900/60 p-3.5 rounded-2xl border border-slate-800">
+          <div>
+            <label className="block text-[11px] font-semibold text-slate-400 mb-1">Filter by Student</label>
+            <select
+              value={selectedStudent}
+              onChange={e => setSelectedStudent(e.target.value)}
+              className="w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-purple-500"
+            >
+              <option value="all">All Students (Cohort)</option>
+              <option value="sanjay">Sanjay Kumar</option>
+              <option value="aarav">Aarav Sharma</option>
+              <option value="priya">Priya Patel</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-[11px] font-semibold text-slate-400 mb-1">Filter by Course</label>
+            <select
+              value={selectedCourse}
+              onChange={e => setSelectedCourse(e.target.value)}
+              className="w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-purple-500"
+            >
+              <option value="all">All Courses</option>
+              <option value="dsa">Data Structures & Algorithms</option>
+              <option value="ai">Agentic AI & Neural Systems</option>
+              <option value="comm">Professional Communication</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-[11px] font-semibold text-slate-400 mb-1">Filter by Topic</label>
+            <select
+              value={selectedTopic}
+              onChange={e => setSelectedTopic(e.target.value)}
+              className="w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-purple-500"
+            >
+              <option value="all">All Topics</option>
+              <option value="recursion">Recursion & Call Stack</option>
+              <option value="dp">Dynamic Programming</option>
+              <option value="graphs">Graph Algorithms</option>
+              <option value="trees">Binary Search Trees</option>
+            </select>
           </div>
         </div>
 

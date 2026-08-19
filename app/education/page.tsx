@@ -48,30 +48,24 @@ export default function SaaSながらLandingPage() {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
           <Link
-            href="/education/dashboard"
+            href="/student/dashboard"
             className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-bold text-base shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
           >
-            <span>Start Learning</span>
+            <span>🎓 Student Dashboard</span>
             <span>→</span>
           </Link>
           <Link
-            href="/education/ai-tutor"
+            href="/student/ai-tutor"
             className="w-full sm:w-auto px-8 py-4 rounded-xl border border-slate-800 bg-slate-900/80 hover:bg-slate-800 text-slate-200 font-semibold text-base transition-all flex items-center justify-center gap-2"
           >
-            <span>Explore AI Tutor</span>
+            <span>🤖 AI Tutor</span>
             <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full">Gemini 2.5</span>
           </Link>
           <Link
-            href="/education/playground"
-            className="w-full sm:w-auto px-6 py-4 rounded-xl border border-blue-500/40 bg-blue-950/30 hover:bg-blue-900/40 text-blue-300 font-semibold text-base transition-all flex items-center justify-center gap-2"
+            href="/admin/dashboard"
+            className="w-full sm:w-auto px-6 py-4 rounded-xl border border-purple-500/30 bg-purple-950/30 hover:bg-purple-900/40 text-purple-300 font-semibold text-base transition-all flex items-center justify-center gap-2"
           >
-            <span>💻 Code Arena</span>
-          </Link>
-          <Link
-            href="/education/admin/workflows"
-            className="w-full sm:w-auto px-6 py-4 rounded-xl border border-purple-500/30 bg-purple-950/20 hover:bg-purple-900/30 text-purple-300 font-semibold text-base transition-all flex items-center justify-center gap-2"
-          >
-            <span>⚡ Workflow Engine</span>
+            <span>⚡ Admin Workspace</span>
           </Link>
         </div>
 
@@ -299,16 +293,16 @@ export default function SaaSながらLandingPage() {
         </p>
         <div className="flex justify-center gap-4">
           <Link
-            href="/education/dashboard"
+            href="/student/dashboard"
             className="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg transition-all"
           >
-            Launch Student Dashboard
+            Launch Student Space
           </Link>
           <Link
-            href="/education/admin/workflows"
-            className="px-8 py-4 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 font-bold rounded-xl transition-all"
+            href="/admin/dashboard"
+            className="px-8 py-4 bg-purple-950/60 hover:bg-purple-900/60 text-purple-200 border border-purple-800/60 font-bold rounded-xl transition-all"
           >
-            Admin Workflows
+            Admin Workspace
           </Link>
         </div>
       </section>

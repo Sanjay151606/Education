@@ -35,6 +35,16 @@ const AGENTS: AgentStatus[] = [
     description: 'Generates targeted questions aligned to student IRT difficulty parameters and evaluates submitted answers.'
   },
   {
+    name: 'Recommendation Agent',
+    role: 'Autonomous Action Synthesizer',
+    status: 'Optimal',
+    lastRun: '45 seconds ago',
+    executionTimeMs: 165,
+    tasksCompleted: 1150,
+    successRate: 99.7,
+    description: 'Generates targeted next steps, remedial practice paths, and unlocks advanced topics upon prerequisite mastery.'
+  },
+  {
     name: 'Study Planner',
     role: 'Daily Schedule Optimizer',
     status: 'Optimal',

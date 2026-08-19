@@ -18,7 +18,7 @@ export default function StudentNavbar() {
     { href: '/student/quiz', label: 'Quiz', icon: '📝' },
     { href: '/student/study-plan', label: 'Study Plan', icon: '📅' },
     { href: '/student/revision', label: 'Revision', icon: '🔄' },
-    { href: '/student/analytics', label: 'Analytics', icon: '📈' },
+    { href: '/student/analytics', label: 'My Analytics', icon: '📈' },
   ]
 
   const isActive = (href: string) => pathname === href || pathname?.startsWith(href + '/')
