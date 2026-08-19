@@ -1,15 +1,11 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import JSquadBadge from './components/JSquadBadge'
 import ChatBot from './components/ChatBot'
 
 export const metadata: Metadata = {
-  title: 'Brain Graph - Neural Learning Platform | J-Squad',
+  title: 'Brain Graph - Neural Learning Platform',
   description: 'Brain Graph - Connect your knowledge with neural network-style learning. Advanced assessment platform with interactive visualizations.',
-  keywords: 'brain graph, neural learning, knowledge graph, communication assessment, interactive learning, J-Squad',
-  authors: [{ name: 'J-Squad' }],
-  creator: 'J-Squad',
-  publisher: 'J-Squad',
+  keywords: 'brain graph, neural learning, knowledge graph, communication assessment, interactive learning',
 }
 
 export default function RootLayout({
@@ -21,7 +17,6 @@ export default function RootLayout({
     <html lang="en">
       <body>
         {children}
-        <JSquadBadge />
         <ChatBot />
       </body>
     </html>

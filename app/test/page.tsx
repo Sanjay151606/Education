@@ -67,26 +67,6 @@ export default function TestHome() {
               Communication Assessment Test
             </h1>
             <p className="text-xl text-gray-600 mb-2">Comprehensive Skills Evaluation</p>
-            <div className="relative inline-block group">
-              <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full blur-sm opacity-40 group-hover:opacity-70 transition-opacity"></div>
-              <div className="relative flex items-center gap-2 px-5 py-2.5 bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 rounded-full shadow-lg border-2 border-yellow-500/50">
-                <svg className="w-5 h-5 animate-pulse" viewBox="0 0 20 20" fill="url(#goldGradientSmall)">
-                  <defs>
-                    <linearGradient id="goldGradientSmall" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" style={{ stopColor: '#fbbf24', stopOpacity: 1 }} />
-                      <stop offset="50%" style={{ stopColor: '#f59e0b', stopOpacity: 1 }} />
-                      <stop offset="100%" style={{ stopColor: '#d97706', stopOpacity: 1 }} />
-                    </linearGradient>
-                  </defs>
-                  <path d="M10 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-7-5z" />
-                </svg>
-                <span className="text-sm font-bold tracking-wide bg-gradient-to-r from-yellow-600 via-amber-600 to-yellow-700 bg-clip-text text-transparent">
-                  Powered by J-SQUAD
-                </span>
-                <div className="w-2 h-2 bg-yellow-400 rounded-full animate-ping absolute -top-1 -right-1"></div>
-                <div className="w-2 h-2 bg-yellow-500 rounded-full absolute -top-1 -right-1 shadow-lg shadow-yellow-500/50"></div>
-              </div>
-            </div>
           </div>
 
           <div className="test-card mb-6">

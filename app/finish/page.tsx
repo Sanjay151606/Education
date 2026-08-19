@@ -243,36 +243,6 @@ export default function Finish() {
               ← Review Answers
             </button>
           </div>
-
-          {/* powerhouse Credit */}
-          <div className="mt-8 pt-6 border-t-2 border-gray-200">
-            <div className="flex items-center justify-center">
-              <div className="relative group cursor-pointer">
-                {/* Gold Glow */}
-                <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full blur-md opacity-40 group-hover:opacity-70 transition-opacity"></div>
-                
-                {/* Silver/Gold Badge */}
-                <div className="relative flex items-center gap-3 px-6 py-3 bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 rounded-full shadow-lg border-2 border-yellow-500/50">
-                  <svg className="w-5 h-5" viewBox="0 0 20 20" fill="url(#goldGradientFinish)">
-                    <defs>
-                      <linearGradient id="goldGradientFinish" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style={{ stopColor: '#fbbf24', stopOpacity: 1 }} />
-                        <stop offset="50%" style={{ stopColor: '#f59e0b', stopOpacity: 1 }} />
-                        <stop offset="100%" style={{ stopColor: '#d97706', stopOpacity: 1 }} />
-                      </linearGradient>
-                    </defs>
-                    <path d="M10 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-7-5z" />
-                  </svg>
-                  <div className="flex flex-col items-start">
-                    <span className="font-bold text-sm tracking-wide bg-gradient-to-r from-yellow-600 via-amber-600 to-yellow-700 bg-clip-text text-transparent">
-                      Crafted by powerhouse.
-                    </span>
-                    <span className="text-xs text-gray-600">Excellence in Assessment Technology</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
