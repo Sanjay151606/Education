@@ -232,13 +232,13 @@ export default function CoursesPage() {
         <div className="mt-16 bg-gradient-to-r from-green-600 to-emerald-700 rounded-2xl p-12 text-center text-white">
           <h2 className="text-3xl font-bold mb-4">Test Your Skills</h2>
           <p className="text-lg mb-6">
-            Take our assessment and get personalized learning recommendations
+            Take a quiz and get personalized learning recommendations
           </p>
           <Link
-            href="/education/dashboard"
+            href="/education/quiz"
             className="inline-block px-8 py-4 bg-white text-green-600 rounded-lg font-bold hover:bg-green-50 transition-all"
           >
-            Take Assessment →
+            Take Quiz →
           </Link>
         </div>
 
