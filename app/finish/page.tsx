@@ -72,7 +72,7 @@ export default function Finish() {
     localStorage.removeItem('progress')
     localStorage.removeItem('candidateName')
     localStorage.removeItem('testStartTime')
-    router.push('/')
+    router.push('/education/dashboard')
   }
 
   if (submitted) {
@@ -143,7 +143,7 @@ export default function Finish() {
               onClick={startNewTest}
               className="btn-primary text-lg px-8 py-4"
             >
-              🏠 Return to Home
+              📊 Go to Main Dashboard
             </button>
           </div>
         </div>
