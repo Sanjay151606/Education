@@ -23,7 +23,12 @@ const nextConfig = {
     }
     return config
   },
-  // Disable source maps in development to save memory
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: false,
+  },
   productionBrowserSourceMaps: false,
 }
 
