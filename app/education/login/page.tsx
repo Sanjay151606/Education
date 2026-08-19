@@ -15,12 +15,12 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    await login(email, role)
+    const loggedUser = await login(email, role)
     setLoading(false)
-    if (role === 'admin') {
-      router.push('/education/admin/workflows')
+    if (role === 'admin' || loggedUser?.role === 'admin') {
+      router.push('/admin/dashboard')
     } else {
-      router.push('/education/dashboard')
+      router.push('/student/dashboard')
     }
   }
 

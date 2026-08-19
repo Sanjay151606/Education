@@ -16,9 +16,9 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    await login(email, role)
+    await login(email, 'student')
     setLoading(false)
-    router.push('/education/dashboard')
+    router.push('/student/dashboard')
   }
 
   return (
