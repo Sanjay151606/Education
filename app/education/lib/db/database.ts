@@ -20,7 +20,9 @@ import {
   DocumentChunk,
   Workflow,
   WorkflowRun,
-  WorkflowLog
+  WorkflowLog,
+  GoogleIntegration,
+  GoogleSheetSync
 } from './schema'
 import {
   INITIAL_STUDENT,
@@ -54,6 +56,8 @@ interface DBData {
   documentChunks: DocumentChunk[]
   workflows: Workflow[]
   workflowRuns: WorkflowRun[]
+  googleIntegrations: GoogleIntegration[]
+  googleSheetSyncs: GoogleSheetSync[]
 }
 
 class DatabaseManager {
@@ -96,7 +100,9 @@ class DatabaseManager {
       documents: [],
       documentChunks: [],
       workflows: [...INITIAL_WORKFLOWS],
-      workflowRuns: []
+      workflowRuns: [],
+      googleIntegrations: [],
+      googleSheetSyncs: []
     }
   }
 
@@ -548,6 +554,75 @@ class DatabaseManager {
     let list = this.data.workflowRuns
     if (workflowId) {
       list = list.filter(r => r.workflowId === workflowId)
+    }
+    return list.slice(0, limit)
+  }
+
+  // ─── Google Sheets Integration Methods ──────────────────────────────────────
+  public getGoogleIntegrations(userId?: string): GoogleIntegration[] {
+    if (!this.data.googleIntegrations) this.data.googleIntegrations = []
+    if (userId) {
+      return this.data.googleIntegrations.filter(i => i.userId === userId)
+    }
+    return this.data.googleIntegrations
+  }
+
+  public getGoogleIntegrationById(id: string): GoogleIntegration | undefined {
+    if (!this.data.googleIntegrations) this.data.googleIntegrations = []
+    return this.data.googleIntegrations.find(i => i.id === id || i.spreadsheetId === id)
+  }
+
+  public saveGoogleIntegration(integration: Omit<GoogleIntegration, 'createdAt' | 'updatedAt' | 'id'> & { id?: string }): GoogleIntegration {
+    if (!this.data.googleIntegrations) this.data.googleIntegrations = []
+    const now = new Date().toISOString()
+    const id = integration.id || `g_int_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`
+    const idx = this.data.googleIntegrations.findIndex(i => i.id === id || i.spreadsheetId === integration.spreadsheetId)
+
+    const fullIntegration: GoogleIntegration = {
+      ...integration,
+      id: idx !== -1 ? this.data.googleIntegrations[idx].id : id,
+      createdAt: idx !== -1 ? this.data.googleIntegrations[idx].createdAt : now,
+      updatedAt: now
+    }
+
+    if (idx !== -1) {
+      this.data.googleIntegrations[idx] = fullIntegration
+    } else {
+      this.data.googleIntegrations.unshift(fullIntegration)
+    }
+
+    this.save()
+    return fullIntegration
+  }
+
+  public deleteGoogleIntegration(id: string): boolean {
+    if (!this.data.googleIntegrations) return false
+    const initialLen = this.data.googleIntegrations.length
+    this.data.googleIntegrations = this.data.googleIntegrations.filter(i => i.id !== id && i.spreadsheetId !== id)
+    if (this.data.googleIntegrations.length !== initialLen) {
+      this.save()
+      return true
+    }
+    return false
+  }
+
+  public recordGoogleSheetSync(sync: Omit<GoogleSheetSync, 'id' | 'startedAt'>): GoogleSheetSync {
+    if (!this.data.googleSheetSyncs) this.data.googleSheetSyncs = []
+    const newSync: GoogleSheetSync = {
+      ...sync,
+      id: `sync_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+      startedAt: new Date().toISOString()
+    }
+    this.data.googleSheetSyncs.unshift(newSync)
+    this.save()
+    return newSync
+  }
+
+  public getGoogleSheetSyncHistory(integrationId?: string, limit: number = 30): GoogleSheetSync[] {
+    if (!this.data.googleSheetSyncs) return []
+    let list = this.data.googleSheetSyncs
+    if (integrationId) {
+      list = list.filter(s => s.integrationId === integrationId)
     }
     return list.slice(0, limit)
   }

@@ -21,6 +21,7 @@ export default function Navigation() {
     { href: '/education/revision', label: 'Revision', icon: '🔄' },
     { href: '/education/progress', label: 'Analytics', icon: '📈' },
     { href: '/education/admin/workflows', label: 'Workflows', icon: '⚡' },
+    { href: '/education/admin/google-sheets', label: 'Google Sheets', icon: '📊' },
   ]
 
   const isActive = (href: string) => {

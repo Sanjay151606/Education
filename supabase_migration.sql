@@ -288,6 +288,38 @@ CREATE TABLE IF NOT EXISTS public.workflow_runs (
     completed_at TIMESTAMPTZ
 );
 
+CREATE TABLE IF NOT EXISTS public.google_integrations (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    spreadsheet_id TEXT NOT NULL,
+    spreadsheet_name TEXT NOT NULL,
+    sheet_name TEXT NOT NULL,
+    sync_frequency TEXT DEFAULT 'MANUAL',
+    last_synced_at TIMESTAMPTZ,
+    sync_status TEXT DEFAULT 'ACTIVE',
+    access_token TEXT,
+    refresh_token TEXT,
+    token_expiry TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS public.google_sheet_syncs (
+    id TEXT PRIMARY KEY,
+    integration_id TEXT REFERENCES public.google_integrations(id) ON DELETE CASCADE,
+    spreadsheet_name TEXT NOT NULL,
+    sheet_name TEXT NOT NULL,
+    rows_processed INTEGER DEFAULT 0,
+    rows_created INTEGER DEFAULT 0,
+    rows_updated INTEGER DEFAULT 0,
+    rows_failed INTEGER DEFAULT 0,
+    error_details TEXT[] DEFAULT '{}',
+    status TEXT NOT NULL,
+    duration_ms INTEGER DEFAULT 0,
+    started_at TIMESTAMPTZ DEFAULT NOW(),
+    completed_at TIMESTAMPTZ
+);
+
 -- ============================================================================
 -- ROW LEVEL SECURITY (RLS) POLICIES
 -- ============================================================================
@@ -307,6 +339,8 @@ ALTER TABLE public.documents ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.document_chunks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.workflows ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.workflow_runs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.google_integrations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.google_sheet_syncs ENABLE ROW LEVEL SECURITY;
 
 -- Public/Read Policies for Curriculum
 CREATE POLICY "Public Read Courses" ON public.courses FOR SELECT USING (true);
@@ -325,6 +359,8 @@ CREATE POLICY "Students Can Access Own Recommendations" ON public.recommendation
 CREATE POLICY "Students Can Access Own Notifications" ON public.notifications FOR ALL USING (true);
 CREATE POLICY "Admins/Auth Can Manage Workflows" ON public.workflows FOR ALL USING (true);
 CREATE POLICY "Admins/Auth Can Manage Workflow Runs" ON public.workflow_runs FOR ALL USING (true);
+CREATE POLICY "Admins Can Manage Google Integrations" ON public.google_integrations FOR ALL USING (true);
+CREATE POLICY "Admins Can Manage Google Sync History" ON public.google_sheet_syncs FOR ALL USING (true);
 
 -- Trigger for auto-creating public.profiles on auth.users sign-up
 CREATE OR REPLACE FUNCTION public.handle_new_user()
@@ -350,3 +386,5 @@ CREATE TRIGGER on_auth_user_created
 CREATE INDEX IF NOT EXISTS idx_topic_mastery_student ON public.topic_mastery (student_id);
 CREATE INDEX IF NOT EXISTS idx_quiz_attempts_student ON public.quiz_attempts (student_id);
 CREATE INDEX IF NOT EXISTS idx_notifications_student ON public.notifications (student_id, is_read);
+CREATE INDEX IF NOT EXISTS idx_google_syncs_integration ON public.google_sheet_syncs (integration_id);
+

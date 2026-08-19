@@ -319,3 +319,59 @@ export interface WorkflowRun {
   completedAt?: string
   error?: string
 }
+
+// ─── Google Sheets Integration Types ──────────────────────────────────────────
+
+export interface GoogleIntegration {
+  id: string
+  userId: string
+  spreadsheetId: string
+  spreadsheetName: string
+  sheetName: string
+  syncFrequency: 'MANUAL' | 'HOURLY' | 'DAILY'
+  lastSyncedAt?: string
+  syncStatus: 'ACTIVE' | 'PAUSED' | 'FAILED'
+  accessToken?: string
+  refreshToken?: string
+  tokenExpiry?: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface GoogleSheetSync {
+  id: string
+  integrationId: string
+  spreadsheetName: string
+  sheetName: string
+  rowsProcessed: number
+  rowsCreated: number
+  rowsUpdated: number
+  rowsFailed: number
+  errorDetails?: string[]
+  startedAt: string
+  completedAt?: string
+  status: 'SUCCESS' | 'PARTIAL' | 'FAILED'
+  durationMs?: number
+}
+
+export interface GoogleSheetImportRow {
+  studentId: string
+  studentName: string
+  email: string
+  course: string
+  topic: string
+  difficulty: 'EASY' | 'MEDIUM' | 'HARD' | 'Beginner' | 'Intermediate' | 'Advanced'
+  quizScore: number
+  masteryScore: number
+  questionsAttempted: number
+  correctAnswers: number
+  studyTime: number
+  lastStudied?: string
+  completionPercentage?: number
+  revisionDue?: string
+  learningStatus?: 'Weak' | 'Medium' | 'Strong' | 'Not Started'
+  assignmentStatus?: 'Pending' | 'Submitted' | 'Graded'
+  goal?: string
+  dailyStudyGoal?: number
+  aiRecommendation?: string
+}
